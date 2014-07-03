@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+# See if a specific PgSQL user exists.  Returns 0 if they exist,
+# and 1 otherwise.
+#
+# Usage:
+#
+#    $0 <username>
+#
+
+RESCOUNT="$(psql -Aqt -c "SELECT COUNT(rolname) FROM pg_catalog.pg_roles WHERE rolname='$1'" template1 2>/dev/null)"
+
+if [ "$RESCOUNT" = "0" ]; then
+	exit 1
+else
+	exit 0
+fi

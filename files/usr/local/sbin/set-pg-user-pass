@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+# Set the specified PgSQL user's password hash to the specified value.
+#
+# Usage:
+#
+#    $0 <username> <pwhash>
+#
+
+psql -Aqt -c "UPDATE pg_catalog.pg_authid SET rolpassword='$2' WHERE rolname='$1'" template1 2>/dev/null

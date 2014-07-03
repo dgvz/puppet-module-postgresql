@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+# See if a specific PgSQL user exists with the specified password hash. 
+# Returns 0 if everything is OK, 1 otherwise.
+#
+# Usage:
+#
+#    $0 <username> <pwhash>
+#
+
+RESCOUNT="$(psql -Aqt -c "SELECT COUNT(usename) FROM pg_catalog.pg_shadow WHERE usename='$1' AND passwd='$2'" template1 2>/dev/null)"
+
+if [ "$RESCOUNT" = "0" ]; then
+	exit 1
+else
+	exit 0
+fi
