@@ -25,10 +25,10 @@ class postgresql::pgdg(
 			}
 			
 			apt::source { 'pgdg':
-				location => 'http://apt.postgresql.org/pub/repos/apt/',
-				release  => "${::lsbdistcodename}-pgdg",
-				repos    => $version,
-				include_source => $include_source
+				location    => 'http://apt.postgresql.org/pub/repos/apt/',
+				release     => "${::lsbdistcodename}-pgdg",
+				repos       => $version,
+				include_src => $include_source
 			}
 		}
 		default: {
