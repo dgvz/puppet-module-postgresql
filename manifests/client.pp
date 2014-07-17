@@ -10,13 +10,7 @@
 define postgresql::client(
 		$version = undef
 ) {
-	noop {
-		"postgresql/client/preinstalled": ;
-		"postgresql/client/installed":
-			require => Noop["postgresql/client/preinstalled"];
-		"postgresql/client/configured":
-			require => Noop["postgresql/client/installed"];
-	}
+	include postgresql::core
 
 	case $::operatingsystem {
 		Debian: {

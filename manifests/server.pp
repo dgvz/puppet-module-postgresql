@@ -35,13 +35,7 @@ define postgresql::server(
 		$contrib     = false,
 		$client      = undef,
 ) {
-	noop {
-		"postgresql/server/preinstalled": ;
-		"postgresql/server/installed":
-			require => Noop["postgresql/server/preinstalled"];
-		"postgresql/server/configured":
-			require => Noop["postgresql/server/installed"];
-	}
+	include postgresql::core
 
 	case $::operatingsystem {
 		Debian: {

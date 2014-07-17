@@ -18,17 +18,21 @@ class postgresql::pgdg(
 		$version        = "main",
 		$include_source = false
 ) {
+	include postgresql::core
+
 	case $::operatingsystem {
 		Debian: {
 			apt::key { 'ACCC4CF8':
-				key_source => 'http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc';
+				key_source => 'http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc',
+				before     => Apt::Source["pgdg"];
 			}
-			
+
 			apt::source { 'pgdg':
 				location    => 'http://apt.postgresql.org/pub/repos/apt/',
 				release     => "${::lsbdistcodename}-pgdg",
 				repos       => $version,
-				include_src => $include_source
+				include_src => $include_source,
+				before      => Noop["postgresql/server/preinstalled"],
 			}
 		}
 		default: {
@@ -36,4 +40,4 @@ class postgresql::pgdg(
 		}
 	}
 }
-				
+
