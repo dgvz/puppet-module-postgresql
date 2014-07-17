@@ -71,11 +71,11 @@ define postgresql::server(
 			           }
 
 			if $development {
-				ensure_packages($dev_packages, $opts)
+				ensure_packages($dev_packages, $pkgopts)
 			}
 
 			if $contrib {
-				ensure_packages($contrib_package, $opts)
+				ensure_packages($contrib_package, $pkgopts)
 			}
 		}
 		default: {
