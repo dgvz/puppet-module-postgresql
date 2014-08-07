@@ -37,6 +37,18 @@ class postgresql::core {
 			group  => "root",
 			mode   => 0555,
 			before => Noop["postgresql/server/preinstalled"];
+		"/usr/local/sbin/check-pg-user-groups":
+			source => "puppet:///modules/postgresql/usr/local/sbin/check-pg-user-groups",
+			owner  => "root",
+			group  => "root",
+			mode   => 0555,
+			before => Noop["postgresql/server/preinstalled"];
+		"/usr/local/sbin/set-pg-user-groups":
+			source => "puppet:///modules/postgresql/usr/local/sbin/set-pg-user-groups",
+			owner  => "root",
+			group  => "root",
+			mode   => 0555,
+			before => Noop["postgresql/server/preinstalled"];
 	}
 }
 
