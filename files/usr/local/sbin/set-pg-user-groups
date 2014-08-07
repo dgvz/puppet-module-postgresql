@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+# Ensure that the specified user is a member of all the specified groups.
+#
+# Usage:
+#
+#    $0 <username> <group> [group ...]
+#
+
+user="$1"
+shift
+
+while [ -n "$1" ]; then
+	group="$1"
+	shift
+
+	psql -Aqt -c "GRANT $group TO $user" template1 2>/dev/null
+done
+

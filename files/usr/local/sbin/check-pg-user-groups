@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -e
+
+# See if a specific PgSQL user is a member of all the listed groups.
+# Returns 0 if everything is OK, 1 otherwise.
+#
+# Usage:
+#
+#    $0 <username> <group> [group ...]
+#
+
+user="$1"
+shift
+
+while [ -n "$1" ]; do
+	group="$1"
+	shift
+
+	rescount="$(psql -Aqt -c "SELECT COUNT(g.groname) FROM pg_catalog.pg_group g JOIN pg_catalog.pg_roles r ON r.oid=any(g.grolist) WHERE r.rolname='$user' AND g.groname='$group'" template1 2>/dev/null)"
+
+	if [ "$rescount" = "0" ]; then
+		exit 1
+	fi
+done
+
+# The groups we want are all there, so we're golden
+exit 0
