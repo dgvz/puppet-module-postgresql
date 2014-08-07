@@ -68,8 +68,8 @@ define postgresql::user(
 
 		if $groups {
 			exec { "${name}::Set groups for ${username}":
-				command => "/bin/su -l postgres -c \"/usr/local/sbin/set-pg-user-groups ${username} ${groups}"\"",
-				unless  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-groups ${username} ${groups}"\"",
+				command => "/bin/su -l postgres -c \"/usr/local/sbin/set-pg-user-groups ${username} ${groups}\"",
+				unless  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-groups ${username} ${groups}\"",
 				require     => [Service["postgresql"],
 									 File["/usr/local/sbin/set-pg-user-groups"],
 									 File["/usr/local/sbin/check-pg-user-groups"],
