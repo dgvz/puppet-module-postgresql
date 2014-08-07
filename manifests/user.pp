@@ -1,3 +1,41 @@
+# Manage a PgSQL user, with a specified password and "group" (actually
+# roles) list.
+#
+# Attributes:
+#
+#  * `ensure` (`present` or `absent`; optional; default `present`)
+#
+#     Control whether the specified user should exist, or be removed.
+#     Things get exciting if you have two resources with the same `username`
+#     and different values for this parameter, so don't do that.
+#
+#  * `username` (string; required)
+#
+#     The name of the specified user.  To allow different parts of a
+#     manifest to ensure the same user exists, this is a separate parameter
+#     to the resource title (which can be anything).
+#
+#  * `password` (string; optional; default `undef`)
+#
+#     If specified, this is taken to be the plaintext password for the user,
+#     and hence the user will be able to specify this password to login.  A
+#     user without a password can still use ident or client cert
+#     authentication, if available and appropriate.
+#
+#  * `groups` (string; optional; default `undef`)
+#
+#     If specified, this is a list of groups (or, more precisely, roles) to
+#     which the user should be granted privileges.  Specifying this
+#     attribute does not guarantee that the user will not have access to
+#     other groups (this is because of the ability to have multiple
+#     `postgresql::user` resources for a single PgSQL user).  If you wish to
+#     be sure that a user does *not* have access to a particular group, you
+#     can specify `-<group>` in the group list.  Note that having two
+#     resources with conflicting group lists (that is, one resource
+#     specifies `<group>` and the other specifies `-<group>` will result in
+#     duelling resources and a configuration that will never converge, so
+#     you probably don't want to do that (but Puppet won't complain).
+#
 define postgresql::user(
 		$ensure   = present,
 		$username,
