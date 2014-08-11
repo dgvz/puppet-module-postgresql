@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -e
+
+# See if a specific PgSQL database has all of the extensions listed.
+#
+# Returns 0 if everything is OK, 1 otherwise.
+#
+# Usage:
+#
+#    $0 <dbname> <extension> [extension ...]
+#
+
+db="$1"
+shift
+
+while [ -n "$1" ]; do
+	ext="$1"
+	shift
+
+	rescount="$(psql -Aqt -c "select COUNT(*) FROM pg_catalog.pg_extension e WHERE e.extname='$ext'" "$db" 2>/dev/null)"
+
+	if [ "$rescount" = "0" ]; then
+		exit 1
+	fi
+done
+
+# The extensions are all there, so we're golden
+exit 0

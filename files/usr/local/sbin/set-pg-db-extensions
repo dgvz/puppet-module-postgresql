@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+# Ensure that the specified db has all the listed extensions.
+#
+# Usage:
+#
+#    $0 <dbname> <extension> [extension ...]
+#
+
+db="$1"
+shift
+
+while [ -n "$1" ]; do
+	ext="$1"
+	shift
+
+	psql -Aqt -c "CREATE EXTENSION \"$ext\"" "$db"
+done
+
