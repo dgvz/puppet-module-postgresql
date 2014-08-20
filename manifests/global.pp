@@ -28,6 +28,6 @@ class postgresql::global(
 		owner   => "root",
 		group   => "root",
 		require => Package["postgresql-common"],
-		before  => Noop["postgresql/server/installed"],
+		before  => Noop["postgresql/server/preinstalled"],
 	}
 }
