@@ -36,11 +36,19 @@
 #     duelling resources and a configuration that will never converge, so
 #     you probably don't want to do that (but Puppet won't complain).
 #
+#  * `connection_limit` (integer; optional; default `-1`)
+#
+#     What connection limit to apply to this user.  The default, `-1`, is a
+#     nice, "no surprises" default that will allow the user unlimited
+#     connections.  If people are playing silly-buggers, then you might want
+#     to tie this down a bit.
+#
 define postgresql::user(
-		$ensure   = present,
+		$ensure           = present,
 		$username,
-		$password = undef,
-		$groups   = undef
+		$password         = undef,
+		$groups           = undef,
+		$connection_limit = undef
 ) {
 	include postgresql::core
 
@@ -73,6 +81,18 @@ define postgresql::user(
 				require     => [Service["postgresql"],
 									 File["/usr/local/sbin/set-pg-user-groups"],
 									 File["/usr/local/sbin/check-pg-user-groups"],
+									 Exec["${name}::Add the ${username} user to PgSQL"],
+									];
+			}
+		}
+
+		if $connection_limit {
+			exec { "${name}::Set connection_limit for ${username}":
+				command => "/bin/su -l postgres -c \"/usr/local/sbin/set-pg-user-conn-limit ${username} ${connection_limit}\"",
+				unless  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-conn-limit ${username} ${connection_limit}\"",
+				require     => [Service["postgresql"],
+									 File["/usr/local/sbin/set-pg-user-conn-limit"],
+									 File["/usr/local/sbin/check-pg-user-conn-limit"],
 									 Exec["${name}::Add the ${username} user to PgSQL"],
 									];
 			}

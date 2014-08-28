@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+# See if a specific PgSQL user has the specified connection limit.
+#
+# Returns 0 if everything is OK, 1 otherwise.
+#
+# Usage:
+#
+#    $0 <username> <limit>
+#
+
+user="$1"
+limit="$2"
+
+if [ "$(psql -Aqt -c "select rolconnlimit FROM pg_catalog.pg_roles WHERE u.rolname='$user'" template1 2>/dev/null)" != "$limit" ]; then
+	exit 1
+else
+	exit 0
+fi

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+# Ensure that the specified user has the specified connection limit.
+#
+# Usage:
+#
+#    $0 <username> <limit>
+#
+
+user="$1"
+limit="$2"
+
+psql -Aqt -c "ALTER USER $user CONNECTION LIMIT $limit" template1 2>/dev/null
