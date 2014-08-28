@@ -12,4 +12,4 @@ set -e
 user="$1"
 limit="$2"
 
-psql -Aqt -c "ALTER USER $user CONNECTION LIMIT $limit" template1 2>/dev/null
+psql -Aqt -c "ALTER USER \"$user\" CONNECTION LIMIT $limit" template1 2>/dev/null

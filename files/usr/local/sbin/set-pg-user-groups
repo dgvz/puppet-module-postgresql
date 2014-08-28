@@ -17,9 +17,9 @@ while [ -n "$1" ]; do
 	shift
 
 	if [ "$(echo "$group" | cut -c 1)" = "-" ]; then
-		psql -Aqt -c "REVOKE $group FROM $user" template1 2>/dev/null
+		psql -Aqt -c "REVOKE \"$group\" FROM \"$user\"" template1 2>/dev/null
 	else
-		psql -Aqt -c "GRANT $group TO $user" template1 2>/dev/null
+		psql -Aqt -c "GRANT \"$group\" TO \"$user\"" template1 2>/dev/null
 	fi
 done
 
