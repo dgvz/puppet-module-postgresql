@@ -37,14 +37,14 @@ class postgresql::core {
 			group  => "root",
 			mode   => 0555,
 			before => Noop["postgresql/server/preinstalled"];
-		"/usr/local/sbin/check-pg-conn-limit":
-			source => "puppet:///modules/postgresql/usr/local/sbin/check-pg-conn-limit",
+		"/usr/local/sbin/check-pg-user-conn-limit":
+			source => "puppet:///modules/postgresql/usr/local/sbin/check-pg-user-conn-limit",
 			owner  => "root",
 			group  => "root",
 			mode   => 0555,
 			before => Noop["postgresql/server/preinstalled"];
-		"/usr/local/sbin/set-pg-conn-limit":
-			source => "puppet:///modules/postgresql/usr/local/sbin/set-pg-conn-limit",
+		"/usr/local/sbin/set-pg-user-conn-limit":
+			source => "puppet:///modules/postgresql/usr/local/sbin/set-pg-user-conn-limit",
 			owner  => "root",
 			group  => "root",
 			mode   => 0555,
