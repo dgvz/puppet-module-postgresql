@@ -48,7 +48,7 @@ define postgresql::user(
 		$username,
 		$password         = undef,
 		$groups           = undef,
-		$connection_limit = undef
+		$connection_limit = -1
 ) {
 	include postgresql::core
 
