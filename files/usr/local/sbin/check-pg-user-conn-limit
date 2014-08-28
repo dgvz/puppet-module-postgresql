@@ -14,7 +14,7 @@ set -e
 user="$1"
 limit="$2"
 
-if [ "$(psql -Aqt -c "select rolconnlimit FROM pg_catalog.pg_roles WHERE u.rolname='$user'" template1 2>/dev/null)" != "$limit" ]; then
+if [ "$(psql -Aqt -c "select rolconnlimit FROM pg_catalog.pg_roles WHERE rolname='$user'" template1 2>/dev/null)" != "$limit" ]; then
 	exit 1
 else
 	exit 0
