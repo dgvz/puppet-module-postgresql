@@ -41,11 +41,10 @@ define postgresql::server(
 		Debian: {
 			if $version {
 				$server_package  = "postgresql-$version"
-				$dev_packages    = ["postgresql-server-dev-$version", "libpq-dev"]
+				$dev_package     = "postgresql-server-dev-$version"
 				$contrib_package = "postgresql-contrib-$version"
 			} else {
 				$server_package  = "postgresql"
-				$dev_packages    = ["libpq-dev"]
 				$contrib_package = "postgresql-contrib-$version"
 			}
 
@@ -65,7 +64,8 @@ define postgresql::server(
 			           }
 
 			if $development {
-				ensure_packages($dev_packages, $pkgopts)
+				include postgresql::dev
+				ensure_packages($dev_package, $pkgopts)
 			}
 
 			if $contrib {
