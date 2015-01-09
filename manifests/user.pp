@@ -9,11 +9,12 @@
 #     Things get exciting if you have two resources with the same `username`
 #     and different values for this parameter, so don't do that.
 #
-#  * `username` (string; required)
+#  * `username` (string; optional; default `$name`)
 #
-#     The name of the specified user.  To allow different parts of a
-#     manifest to ensure the same user exists, this is a separate parameter
-#     to the resource title (which can be anything).
+#     The name of the specified user.  By default, the username will be
+#     taken from the resource's title, but to allow different parts of a
+#     manifest to ensure the same user exists, you can use this parameter to
+#     override the title.
 #
 #  * `password` (string; optional; default `undef`)
 #
@@ -45,62 +46,68 @@
 #
 define postgresql::user(
 		$ensure           = present,
-		$username,
+		$username         = undef,
 		$password         = undef,
 		$groups           = undef,
 		$connection_limit = -1
 ) {
 	include postgresql::core
 
+	if $username {
+		$user = $username
+	} else {
+		$user = $name
+	}
+
 	if $ensure == present {
-		exec { "${name}::Add the ${username} user to PgSQL":
-			command => "/bin/su -l postgres -c \"/usr/bin/createuser -DRSl -c 3 ${username}\"",
-			unless  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-exists ${username}\"",
+		exec { "${name}::Add the ${user} user to PgSQL":
+			command => "/bin/su -l postgres -c \"/usr/bin/createuser -DRSl -c 3 ${user}\"",
+			unless  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-exists ${user}\"",
 			require => [Service["postgresql"],
 							File["/usr/local/sbin/check-pg-user-exists"]];
 		}
 
 		if $password {
-			$pwhash = pg_hash($username, $password)
+			$pwhash = pg_hash($user, $password)
 
-			exec { "${name}::Set the password for PgSQL user ${username}":
-				command => "/bin/su -l postgres -c \"/usr/local/sbin/set-pg-user-pass ${username} ${pwhash}\"",
-				unless  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-pass ${username} ${pwhash}\"",
+			exec { "${name}::Set the password for PgSQL user ${user}":
+				command => "/bin/su -l postgres -c \"/usr/local/sbin/set-pg-user-pass ${user} ${pwhash}\"",
+				unless  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-pass ${user} ${pwhash}\"",
 				require     => [Service["postgresql"],
 									 File["/usr/local/sbin/set-pg-user-pass"],
 									 File["/usr/local/sbin/check-pg-user-pass"],
-									 Exec["${name}::Add the ${username} user to PgSQL"]
+									 Exec["${name}::Add the ${user} user to PgSQL"]
 									];
 			}
 		}
 
 		if $groups {
-			exec { "${name}::Set groups for ${username}":
-				command => "/bin/su -l postgres -c \"/usr/local/sbin/set-pg-user-groups ${username} ${groups}\"",
-				unless  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-groups ${username} ${groups}\"",
+			exec { "${name}::Set groups for ${user}":
+				command => "/bin/su -l postgres -c \"/usr/local/sbin/set-pg-user-groups ${user} ${groups}\"",
+				unless  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-groups ${user} ${groups}\"",
 				require     => [Service["postgresql"],
 									 File["/usr/local/sbin/set-pg-user-groups"],
 									 File["/usr/local/sbin/check-pg-user-groups"],
-									 Exec["${name}::Add the ${username} user to PgSQL"],
+									 Exec["${name}::Add the ${user} user to PgSQL"],
 									];
 			}
 		}
 
 		if $connection_limit {
-			exec { "${name}::Set connection_limit for ${username}":
-				command => "/bin/su -l postgres -c \"/usr/local/sbin/set-pg-user-conn-limit ${username} ${connection_limit}\"",
-				unless  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-conn-limit ${username} ${connection_limit}\"",
+			exec { "${name}::Set connection_limit for ${user}":
+				command => "/bin/su -l postgres -c \"/usr/local/sbin/set-pg-user-conn-limit ${user} ${connection_limit}\"",
+				unless  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-conn-limit ${user} ${connection_limit}\"",
 				require     => [Service["postgresql"],
 									 File["/usr/local/sbin/set-pg-user-conn-limit"],
 									 File["/usr/local/sbin/check-pg-user-conn-limit"],
-									 Exec["${name}::Add the ${username} user to PgSQL"],
+									 Exec["${name}::Add the ${user} user to PgSQL"],
 									];
 			}
 		}
 	} elsif $ensure == absent {
-		exec { "${name}::Remove the ${username} user from PgSQL":
-			command => "/bin/su -l postgres -c \"/usr/bin/dropuser ${username}\"",
-			onlyif  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-exists ${username}\"",
+		exec { "${name}::Remove the ${user} user from PgSQL":
+			command => "/bin/su -l postgres -c \"/usr/bin/dropuser ${user}\"",
+			onlyif  => "/bin/su -l postgres -c \"/usr/local/sbin/check-pg-user-exists ${user}\"",
 			require => [Service["postgresql"],
 			            File["/usr/local/sbin/check-pg-user-exists"]];
 		}
