@@ -22,7 +22,7 @@ class postgresql::pgdg(
 
 	case $::operatingsystem {
 		Debian: {
-			apt::key { 'ACCC4CF8':
+			apt::key { 'B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8':
 				key_source => 'http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc',
 				before     => Apt::Source["pgdg"];
 			}
