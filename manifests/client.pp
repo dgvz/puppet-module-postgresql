@@ -23,6 +23,7 @@ define postgresql::client(
 			package { $client_package:
 				before  => Noop["postgresql/client/installed"],
 				require => Noop["postgresql/client/preinstalled"],
+				tag    => 'postgresql',
 			}
 		}
 		default: {

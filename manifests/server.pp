@@ -51,6 +51,7 @@ define postgresql::server(
 			package { $server_package:
 				before  => Noop["postgresql/server/installed"],
 				require => Noop["postgresql/server/preinstalled"],
+				tag    => 'postgresql',
 			}
 
 			service { "postgresql":

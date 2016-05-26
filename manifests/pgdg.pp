@@ -34,6 +34,13 @@ class postgresql::pgdg(
 				include_src => $include_source,
 				before      => Noop["postgresql/server/preinstalled"],
 			}
+
+			# Ensure that we apt-get update after the sources are updated
+			# This pattern was taken from the official module
+			# https://github.com/puppetlabs/puppetlabs-postgresql/blob/master/manifests/repo/apt_postgresql_org.pp#L21
+			Apt::Source['pgdg']->Package<|tag == 'postgresql'|>
+			Class['Apt::Update'] -> Package<|tag == 'postgresql'|>
+
 		}
 		default: {
 			fail "I don't know how to enable PGDG for ${::operatingsystem}.  Patches welcome!"

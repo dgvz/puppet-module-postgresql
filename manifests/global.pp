@@ -16,7 +16,9 @@ class postgresql::global(
 		$locale   = undef,
 		$encoding = undef
 ) {
-	package { "postgresql-common": }
+	package { "postgresql-common":
+		tag    => 'postgresql',
+	}
 
 	$postgresql_global_locale   = $locale
 	$postgresql_global_encoding = $encoding
